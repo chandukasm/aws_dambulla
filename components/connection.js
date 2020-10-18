@@ -1,13 +1,13 @@
 const { Pool } = require("pg");
 
-// const pool = new Pool({
-//   user: "postgres",
-//   host: "localhost",
-//   database: "base_d",
-//   password: "eleos",
-//   port: 5432,
-//   max: 20,
-// });
+const pool = new Pool({
+  user: "postgres",
+  host: "localhost",
+  database: "base_d",
+  password: "eleos",
+  port: 5432,
+  max: 20,
+});
 
 // const pool = new Pool({
 //   user: "nnammzahukkhag",
@@ -19,14 +19,14 @@ const { Pool } = require("pg");
 //   ssl: true,
 // });
 
-const pool = new Pool({
-  user: "postgres",
-  host: "dambulla.cz3wrdwn78xb.us-east-2.rds.amazonaws.com",
-  database: "dambulla",
-  password: "base_dambulla",
-  port: 5432,
-  max: 20,
-  ssl: true,
-});
+// const pool = new Pool({
+//   user: "postgres",
+//   host: "dambulla.cz3wrdwn78xb.us-east-2.rds.amazonaws.com",
+//   database: "dambulla",
+//   password: "base_dambulla",
+//   port: 5432,
+//   max: 20,
+//   ssl: true,
+// });
 
 module.exports = pool;

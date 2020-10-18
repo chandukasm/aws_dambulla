@@ -1,3 +1,6 @@
+require("express-async-errors");
+const winston = require("winston");
+const err = require("./middleware/error");
 const express = require("express");
 const app = express();
 const cors = require("cors");
@@ -10,24 +13,28 @@ const pool = require("./components/connection");
 const patient = require("./routes/Patients");
 const mid = require("./components/prod");
 const multer = require("multer");
-// const { Client } = require("pg");
-// const connectionString = "postgresql://postgres:eleos@localhost:5432/test";
 
-// const group = require("./routes/group");
-
-// app.use(function(req, res, next) {
-//   res.header("Access-Control-Allow-Origin", "http://localhost:3001"); // update to match the domain you will make the request from
-//   res.header(
-//     "Access-Control-Allow-Headers",
-//     "Origin, X-Requested-With, Content-Type, Accept"
-//   );
-//   next();
+//only for synchronss code
+// process.on("unncaughtException", (ex) => {
+//   console.log("unncaughtException");
+//   winston.error(ex.message, err);
+//   process.exit(1);
 // });
 
-// const client = new Client({
-//   connectionString: connectionString
-// });
-// client.connect();
+winston.handleExceptions(
+  new winston.transports.File({ filename: "unncaughtException.log" })
+);
+
+//only for synchronss code
+process.on("unhandledRejection", (ex) => {
+  // console.log("unhandledRejection");
+  // winston.error(ex.message, err);
+  // process.exit(1);
+  throw ex;
+});
+
+winston.add(winston.transports.File, { filename: "logfile.log" });
+
 mid(app);
 const createScript = [
   "CREATE TABLE IF NOT EXISTS public.vacations (id int NOT NULL ,name varchar(255) NOT NULL )",
@@ -57,12 +64,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // app.use("/api/auth", auth);
 // app.use("/api/traveler", traveler);
 app.use("/api/patient", patient);
-// app.use("/api/group", group);
-
+//a single place to hanle errors
+app.use(err); //not calling the function just passing  a reference to the function
 // if (!config.get("jwtPrivateKey")) {
 //   console.error("FATEL ERROR: JWT PRIVATE KEY NOT DEFINED");
 //   process.exit(1);
 // }
+
+//middleware
 
 app.get("/", (req, res) => {
   res.send("your request recieved welcome to base hospitl Dambulla!");
